@@ -73,11 +73,20 @@ namespace lag
 	};
 
 	template<typename Matching, typename ... Types>
-	constexpr unsigned int TypeIndex = TypeIndexBack<0, Matching, Types...>;
+	constexpr unsigned int TypeIndex = TypeIndexBack<0, Matching, Types...>::func();
 
 	template<typename Matching, typename ... Types>
 	constexpr unsigned int get_type_index(TypeList<Types...> t)
 	{
 		return TypeIndex<Matching, Types...>;
 	}
+
+
+	//get size of a typelist
+	template<unsigned int S, typename ... Types>
+	constexpr unsigned int _SizeTypes = S;
+	template<unsigned int S, typename First, typename ... Types>
+	constexpr unsigned int _SizeTypes<S, First, Types...> = _SizeTypes<S + 1, Types...>;
+	template<typename ... Types>
+	constexpr unsigned int SizeTypes = _SizeTypes<0, Types...>;
 }
