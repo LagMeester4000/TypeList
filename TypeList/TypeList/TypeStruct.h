@@ -4,9 +4,16 @@
 
 namespace lag
 {
+	/*
+	TypeStruct class
+	a struct that has every member in a given
+	typelist as a member variable.
+	is faster than using a normal list because all
+	the data
+	*/
 	template<typename ... Types>
 	struct TypeStruct;
-
+	
 	template<typename Front, typename ... Back>
 	struct TypeStruct<Front, Back...>
 	{
@@ -21,9 +28,11 @@ namespace lag
 		template<typename T>
 		T &getType();
 
+		//compile time function to get a type at an index (much faster than runtime version)
 		template<unsigned int I>
 		auto &getAt();
 
+		//runtime function to get a type at an index (much slower than the compile time version)
 		template<typename T>
 		T &getAt(unsigned int index);
 	};
@@ -33,6 +42,42 @@ namespace lag
 	{
 		using typelist = TypeList<Front>;
 		Front front;
+
+		//get the amount of types in the struct
+		constexpr unsigned int size()
+		{
+			return 1;
+		}
+
+		//get a type at an index
+		template<typename T>
+		T &getType()
+		{
+			if (std::is_same<T, Front>::value)
+			{
+				return front;
+			}
+		}
+
+		//compile time function to get a type at an index (much faster than runtime version)
+		template<unsigned int I>
+		auto &getAt()
+		{
+			if (I == 0)
+			{
+				return front;
+			}
+		}
+
+		//runtime function to get a type at an index (much slower than the compile time version)
+		template<typename T>
+		T &getAt(unsigned int index)
+		{
+			if (index == 0)
+			{
+				return (void*)&front;
+			}
+		}
 	};
 
 
